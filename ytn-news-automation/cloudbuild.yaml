@@ -1,0 +1,5 @@
+steps:
+- name: gcr.io/cloud-builders/docker
+  args: ['build','-f','server/Dockerfile','-t','asia-northeast3-docker.pkg.dev/snappy-figure-469602-p1/news/ytn-news-api:v1','.']
+images:
+- 'asia-northeast3-docker.pkg.dev/snappy-figure-469602-p1/news/ytn-news-api:v1'
