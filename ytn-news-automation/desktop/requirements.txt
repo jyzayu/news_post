@@ -1,0 +1,16 @@
+PyQt5==5.15.10
+requests==2.32.3
+beautifulsoup4==4.12.3
+google-cloud-firestore==2.16.0
+firebase-admin==6.5.0
+python-dotenv==1.0.1
+httpx==0.27.0
+playwright==1.46.0
+loguru==0.7.2
+protobuf==4.25.3
+typing_extensions>=4.7.1
+
+
+
+
+
