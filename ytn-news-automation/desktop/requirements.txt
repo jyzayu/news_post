@@ -9,7 +9,7 @@ playwright==1.46.0
 loguru==0.7.2
 protobuf==4.25.3
 typing_extensions>=4.7.1
-
+pyinstaller==6.15.0
 
 
 
