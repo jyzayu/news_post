@@ -2,26 +2,30 @@
 
 PyQt5 데스크톱 앱으로 YTN "많이 본 뉴스"를 크롤링하여 Firestore에 저장하고, 선택된 기사를 자동으로 네이버 블로그에 포스팅하는 엔드투엔드 시스템입니다. 또한 Cloud Run에 배포 가능한 FastAPI 서버를 포함합니다.
 
+image
+
+- YTN 크롤링 버튼을 클릭하면 테이블에서  Title 혹은 URL 동일한 것을 제외하고  뉴스 10개를 가져옵니다.
+
+- 네이버 블로그 포스팅 버튼을 클릭하면 크롤링 한 뉴스 정보를 가지고 세 개씩 포스팅을 진행합니다. 포스팅이 완료되면  테이블에서 해당 뉴스의 status 값이  new 에서 posted 로 변경됩니다. 포스팅은 status가 new 인 뉴스 정보를 대상으로 진행됩니다.
+
+- 테이블에서 처리하고 싶은 뉴스 한 줄을 클릭한 후에 Read, Update, Delete 버튼을 클릭하면 작업이 가능합니다. Create를 클릭하여 뉴스를 직접 입력할 수 있습니다.
+
+
+
 ### 구성 요소
-- 데스크톱 (PyQt5): 크롤링, Firestore CRUD, 네이버 블로그 포스팅, 실시간 로그
-- 서버 (FastAPI): Firestore 기반 REST CRUD API
-- 설정 (Config): 환경 변수 및 Firebase Admin 인증 키 템플릿
-- 문서 (Docs): 배포 가이드 및 스크린샷
+- desktop (PyQt5): 크롤링, Firestore CRUD, 네이버 블로그 포스팅, 실시간 로그
+- server (FastAPI): cloud run, Firestore 기반 REST CRUD API
+- config : 환경 변수 및 Firebase Admin 인증 키 템플릿
+- Docs: 배포 가이드 및 스크린샷
+
 
 ### Quick Start (Desktop)
-1) Create `config/serviceAccountKey.json` from your Firebase Admin key
-2) Copy `config/.env.example` to `config/.env` and fill values
-3) Install deps: `pip install -r desktop/requirements.txt`
-4) Install Playwright browsers: `python -m playwright install --with-deps chromium`
-5) Run: `python -m desktop.main`
+- 파일 탐색기에서 exe 더블 클릭 
 
 ### Quick Start (Server)
-1) Ensure `config/serviceAccountKey.json` exists
-2) Copy `.env.example` to `.env` and fill `FIREBASE_PROJECT_ID`
-3) Install deps: `pip install -r server/requirements.txt`
-4) Run locally: `uvicorn server.main:app --reload`
+- cloud run으로 배포된 API 사용
+- API문서 확인
 
-### Server API
 
 - **Base URL**: https://ytn-news-api-187404241319.asia-northeast3.run.app
 - **Content-Type**: application/json; charset=utf-8
@@ -113,10 +117,32 @@ PyQt5 데스크톱 앱으로 YTN "많이 본 뉴스"를 크롤링하여 Firestor
   - `created_at`, `updated_at`은 RFC3339 datetime 문자열
 
 
+
+
+
+### Quick Start (Desktop)
+- exe 실행 
+
+1) Create `config/serviceAccountKey.json` from your Firebase Admin key
+2) Copy `config/.env.example` to `config/.env` and fill values
+3) Install deps: `pip install -r desktop/requirements.txt`
+4) Install Playwright browsers: `python -m playwright install --with-deps chromium`
+5) Run: `python -m desktop.main`
+
+### Quick Start (Server)
+- cloud run으로 배포된 API 사용  API문서 확인
+
+1) Ensure `config/serviceAccountKey.json` exists
+2) Copy `.env.example` to `.env` and fill `FIREBASE_PROJECT_ID`
+3) Install deps: `pip install -r server/requirements.txt`
+4) Run locally: `uvicorn server.main:app --reload`
+
+### Server API
+
 ### Build EXE
 Use PyInstaller from within `desktop/`:
 ```
-pyinstaller --noconfirm --name YTN_News_Automation --onefile --add-data "../config/serviceAccountKey.json;config" --add-data "../config/.env;." main.py
+.\.venv\Scripts\pyinstaller --noconfirm --clean --onefile --windowed --name YTNNewsApp --add-data "config;config" --add-data "C:\projects\news_post\ytn-news-automation\.venv\Lib\site-packages\playwright\driver\package\.local-browsers;playwright\driver\package\.local-browsers" desktop\main.py
 ```
 The file `YTN_News_Automation.exe` will be created in `dist/`. Move it to repo root for submission.
 
