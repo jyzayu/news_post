@@ -145,7 +145,7 @@ PyQt5 데스크톱 앱으로 YTN "많이 본 뉴스"를 크롤링하여 Firestor
 ### Build EXE
 Use PyInstaller from within `desktop/`:
 ```
-.\.venv\Scripts\pyinstaller --noconfirm --clean --onefile --windowed --name YTNNewsApp --add-data "config;config" --add-data "C:\projects\news_post\ytn-news-automation\.venv\Lib\site-packages\playwright\driver\package\.local-browsers;playwright\driver\package\.local-browsers" desktop\main.py
+.\.venv\Scripts\pyinstaller --noconfirm --clean --onefile --windowed --name YTNNewsApp --add-data "config;config" --add-data "C:\projects\news_post\ytn-news-automation\.venv\Lib\site-packages\playwright\driver\package\.local-browsers;playwright\driver\package\.local-browsers" desktop\main.py | Out-Host
 ```
 The file `YTN_News_Automation.exe` will be created in `dist/`. Move it to repo root for submission.
 
