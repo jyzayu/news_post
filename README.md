@@ -2,11 +2,13 @@
 
 PyQt5 데스크톱 앱으로 YTN "많이 본 뉴스"를 크롤링하여 Firestore에 저장하고, 선택된 기사를 자동으로 네이버 블로그에 포스팅하는 엔드투엔드 시스템입니다. 또한 Cloud Run에 배포 가능한 FastAPI 서버를 포함합니다.
 
-image
+- 파일 탐색기에서 exe 더블 클릭하여 실행 가능합니다.
+<img width="1198" height="832" alt="image" src="https://github.com/user-attachments/assets/a528f1af-8ed0-4f0b-9b05-afdf1898ba74" />
+
 
 - YTN 크롤링 버튼을 클릭하면 테이블에서  Title 혹은 URL 동일한 것을 제외하고  뉴스 10개를 가져옵니다.
 
-- 네이버 블로그 포스팅 버튼을 클릭하면 크롤링 한 뉴스 정보를 가지고 세 개씩 포스팅을 진행합니다. 포스팅이 완료되면  테이블에서 해당 뉴스의 status 값이  new 에서 posted 로 변경됩니다. 포스팅은 status가 new 인 뉴스 정보를 대상으로 진행됩니다.
+- 네이버 블로그 포스팅 버튼을 클릭하면 크롤링 한 뉴스 정보를 가지고 세 개씩 포스팅을 진행합니다. 포스팅이 완료되면 포스팅 대상에서 제외됩니다.
 
 - 테이블에서 처리하고 싶은 뉴스 한 줄을 클릭한 후에 Read, Update, Delete 버튼을 클릭하면 작업이 가능합니다. Create를 클릭하여 뉴스를 직접 입력할 수 있습니다.
 
@@ -19,13 +21,10 @@ image
 - Docs: 배포 가이드 및 스크린샷
 
 
-### Quick Start (Desktop)
-- 파일 탐색기에서 exe 더블 클릭 
+###  Server API
 
-### Quick Start (Server)
-- cloud run으로 배포된 API 사용
+- cloud run으로 배포된 API 사용합니다.
 - API문서 확인
-
 
 - **Base URL**: https://ytn-news-api-187404241319.asia-northeast3.run.app
 - **Content-Type**: application/json; charset=utf-8
