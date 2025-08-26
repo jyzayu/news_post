@@ -12,9 +12,16 @@ except Exception as exc:
 
 
 def main() -> int:
-    # Load environment
-    load_dotenv(dotenv_path=os.path.join(os.path.dirname(os.path.dirname(__file__)), "config", ".env"), override=False)
-    # Fallback to project root .env
+    # Load environment from multiple locations
+    # 1) Bundled config when running as PyInstaller onefile
+    base_dir = getattr(sys, "_MEIPASS", os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+    load_dotenv(dotenv_path=os.path.join(base_dir, "config", ".env"), override=False)
+
+    # 2) EXE directory .env (supports placing .env next to moved exe)
+    exe_dir = os.path.dirname(sys.executable) if getattr(sys, "frozen", False) else os.getcwd()
+    load_dotenv(dotenv_path=os.path.join(exe_dir, ".env"), override=False)
+
+    # 3) Fallback to current working directory search
     load_dotenv(override=False)
 
     app = QApplication(sys.argv)

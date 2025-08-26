@@ -1,4 +1,5 @@
 import os
+import sys
 from typing import Any, Dict, List, Optional
 
 import firebase_admin
@@ -28,10 +29,11 @@ class FirestoreManager:
                     except KeyError:
                         pass
 
-            # Try project-local default file path if present
+            # Try bundled or project-local default file path if present
             if not firebase_admin._apps:
-                root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-                default_abs = os.path.join(root, "config", "serviceAccountKey.json")
+                # When frozen, prefer bundled config under _MEIPASS
+                base_dir = getattr(sys, "_MEIPASS", os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
+                default_abs = os.path.join(base_dir, "config", "serviceAccountKey.json")
                 if os.path.exists(default_abs):
                     cred = credentials.Certificate(default_abs)
                     firebase_admin.initialize_app(cred, {"projectId": project_id} if project_id else None)
