@@ -2,9 +2,11 @@
 
 PyQt5 데스크톱 앱으로 YTN "많이 본 뉴스"를 크롤링하여 Firestore에 저장하고, 크롤링한 기사를 자동으로 네이버 블로그에 포스팅하는 시스템입니다. 또한 개발자가 사용 가능한 FastAPI 서버를 포함합니다.
 
-<img width="964" height="640" alt="image" src="https://github.com/user-attachments/assets/bc747a1a-a2a4-47b8-8944-1f46b6bcc359" />
-
 - 파일 탐색기에서 YTNNewsApp.exe 더블 클릭하여 실행 가능합니다.
+<img width="958" height="646" alt="image" src="https://github.com/user-attachments/assets/67878091-f7e8-40c2-a8cd-fdd57448c548" />
+
+
+
 <img width="1198" height="832" alt="image" src="https://github.com/user-attachments/assets/a528f1af-8ed0-4f0b-9b05-afdf1898ba74" />
 
 
