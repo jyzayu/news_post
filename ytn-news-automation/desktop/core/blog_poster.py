@@ -52,16 +52,42 @@ class NaverBlogPoster:
             popup = frame_loc.locator("div.se-popup-alert-confirm").first
             if popup.count() > 0 and popup.is_visible():
                 cancel_span = popup.locator("span.se-popup-button-text").filter(has_text=re.compile(r"^\s*취소\s*$"))
-                if cancel_span.count() > 0 and cancel_span.first.is_visible():
-                    cancel_span.first.locator("xpath=ancestor::button[1]").click()
+                if cancel_span.count() > 0 and cancel_span.last.is_visible():
+                    cancel_span.last.locator("xpath=ancestor::button[1]").click()
         except Exception:
             # Fallback to main document
             try:
                 popup_top = page.locator("div.se-popup-alert-confirm").first
                 if popup_top.count() > 0 and popup_top.is_visible():
                     cancel_span_top = popup_top.locator("span.se-popup-button-text").filter(has_text=re.compile(r"^\s*취소\s*$"))
-                    if cancel_span_top.count() > 0 and cancel_span_top.first.is_visible():
-                        cancel_span_top.first.locator("xpath=ancestor::button[1]").click()
+                    if cancel_span_top.count() > 0 and cancel_span_top.last.is_visible():
+                        cancel_span_top.last.locator("xpath=ancestor::button[1]").click()
+            except Exception:
+                pass
+
+        # Optionally close help panel if it appears; otherwise click 'Next'
+        try:
+            frame_loc = page.frame_locator("#mainFrame")
+            help_panel = frame_loc.locator(".se-help-panel.se-is-on").first
+            if help_panel.count() > 0 and help_panel.is_visible():
+                close_btn = help_panel.locator("button.se-help-panel-close-button, .se-help-panel-close-button").first
+                if close_btn.count() > 0 and close_btn.is_visible():
+                    close_btn.click()
+                else:
+                    next_btn = help_panel.locator("button.slick-next").first
+                    if next_btn.count() > 0 and next_btn.is_visible():
+                        next_btn.click()
+        except Exception:
+            try:
+                help_panel_top = page.locator(".se-help-panel.se-is-on").first
+                if help_panel_top.count() > 0 and help_panel_top.is_visible():
+                    close_btn_top = help_panel_top.locator("button.se-help-panel-close-button, .se-help-panel-close-button").first
+                    if close_btn_top.count() > 0 and close_btn_top.is_visible():
+                        close_btn_top.click()
+                    else:
+                        next_btn_top = help_panel_top.locator("button.slick-next").first
+                        if next_btn_top.count() > 0 and next_btn_top.is_visible():
+                            next_btn_top.click()
             except Exception:
                 pass
 
