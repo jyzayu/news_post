@@ -41,14 +41,15 @@ class MainWindow(QMainWindow):
         self.poster = NaverBlogPoster()
 
         # UI
-        self.table = QTableWidget(0, 6)
+        self.table = QTableWidget(0, 7)
         self.table.setHorizontalHeaderLabels([
-            "title",
-            "published_at",
-            "email",
-            "phone",
-            "source_url",
-            "status",
+            "제목",
+            "본문",
+            "발행일",
+            "기자명",
+            "기자이메일",
+            "카테고리",
+            "원본URL",
         ])
         self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.table.setSelectionBehavior(QAbstractItemView.SelectRows)
@@ -57,9 +58,7 @@ class MainWindow(QMainWindow):
         
 
         # Controls
-        self.search_input = QLineEdit()
-        self.search_input.setPlaceholderText("Search title...")
-        self.btn_refresh = QPushButton("Refresh")
+        # Removed search input and refresh button per requirements
         self.btn_crawl = QPushButton("YTN 크롤링 실행")
         self.btn_post = QPushButton("네이버 블로그 포스팅")
         self.btn_create = QPushButton("Create")
@@ -68,9 +67,6 @@ class MainWindow(QMainWindow):
         self.btn_delete = QPushButton("Delete")
 
         top_bar = QHBoxLayout()
-        top_bar.addWidget(QLabel("검색:"))
-        top_bar.addWidget(self.search_input)
-        top_bar.addWidget(self.btn_refresh)
         top_bar.addWidget(self.btn_crawl)
         top_bar.addWidget(self.btn_post)
         top_bar.addStretch(1)
@@ -95,14 +91,12 @@ class MainWindow(QMainWindow):
         self.setStatusBar(self.status)
 
         # Wire
-        self.btn_refresh.clicked.connect(self.refresh_firestore)
         self.btn_crawl.clicked.connect(self.crawl_ytn_news)
         self.btn_post.clicked.connect(self.post_to_naver)
         self.btn_create.clicked.connect(self.create_news)
         self.btn_update.clicked.connect(self.update_news)
         self.btn_read.clicked.connect(self.read_news)
         self.btn_delete.clicked.connect(self.delete_news)
-        self.search_input.textChanged.connect(self.apply_filter)
 
         self.refresh_firestore()
 
@@ -113,7 +107,7 @@ class MainWindow(QMainWindow):
         self.logs.ensureCursorVisible()
 
     def set_busy(self, busy: bool) -> None:
-        for btn in [self.btn_refresh, self.btn_crawl, self.btn_post, self.btn_create, self.btn_read, self.btn_update, self.btn_delete]:
+        for btn in [self.btn_crawl, self.btn_post, self.btn_create, self.btn_read, self.btn_update, self.btn_delete]:
             btn.setEnabled(not busy)
         QtApplication.setOverrideCursor(Qt.WaitCursor if busy else Qt.ArrowCursor)
 
@@ -155,29 +149,31 @@ class MainWindow(QMainWindow):
             self.table.insertRow(row)
             values = [
                 item.get("title", ""),
+                item.get("content", ""),
                 item.get("published_at", ""),
-                item.get("email", ""),
-                item.get("phone", ""),
+                item.get("reporter_name", ""),
+                item.get("reporter_email", ""),
+                item.get("category", ""),
                 item.get("source_url", ""),
-                item.get("status", ""),
             ]
             for col, value in enumerate(values):
                 qitem = QTableWidgetItem(str(value))
                 if col == 0 and item.get("id"):
                     qitem.setData(Qt.UserRole, item.get("id"))
                 self.table.setItem(row, col, qitem)
-        self.apply_filter()
+        # No search filter; show all rows
 
     def populate_table_from_crawler(self, items: List[Dict[str, Any]]) -> None:
         mapped: List[Dict[str, Any]] = []
         for it in items:
             mapped.append({
                 "title": it.get("title", ""),
+                "content": it.get("content", ""),
                 "published_at": it.get("published_at", ""),
-                "email": it.get("email", ""),
-                "phone": it.get("phone", ""),
+                "reporter_name": it.get("reporter_name", ""),
+                "reporter_email": it.get("email", ""),
+                "category": it.get("category", ""),
                 "source_url": it.get("link", ""),
-                "status": it.get("status", "new"),
             })
         self.populate_table(mapped)
 
@@ -256,11 +252,12 @@ class MainWindow(QMainWindow):
                 return
             data = {
                 "title": self.table.item(row, 0).text() if self.table.item(row, 0) else "",
-                "published_at": self.table.item(row, 1).text() if self.table.item(row, 1) else "",
-                "email": self.table.item(row, 2).text() if self.table.item(row, 2) else "",
-                "phone": self.table.item(row, 3).text() if self.table.item(row, 3) else "",
-                "source_url": self.table.item(row, 4).text() if self.table.item(row, 4) else "",
-                "status": self.table.item(row, 5).text() if self.table.item(row, 5) else "",
+                "content": self.table.item(row, 1).text() if self.table.item(row, 1) else "",
+                "published_at": self.table.item(row, 2).text() if self.table.item(row, 2) else "",
+                "reporter_name": self.table.item(row, 3).text() if self.table.item(row, 3) else "",
+                "reporter_email": self.table.item(row, 4).text() if self.table.item(row, 4) else "",
+                "category": self.table.item(row, 5).text() if self.table.item(row, 5) else "",
+                "source_url": self.table.item(row, 6).text() if self.table.item(row, 6) else "",
             }
             NewsViewerDialog(self, initial=data).exec_()
             return
@@ -289,6 +286,10 @@ class MainWindow(QMainWindow):
                     "title": it.get("title", ""),
                     "published_at": it.get("published_at", ""),
                     "content": it.get("content", ""),
+                    "reporter_email": it.get("email", ""),
+                    "reporter_name": it.get("reporter_name", ""),
+                    "category": it.get("category", ""),
+                    # keep legacy fields for backward compatibility
                     "email": it.get("email", ""),
                     "phone": it.get("phone", ""),
                     "source_url": source_url,
@@ -327,11 +328,6 @@ class MainWindow(QMainWindow):
         finally:
             self.set_busy(False)
 
-    def apply_filter(self) -> None:
-        text = (self.search_input.text() or "").strip().lower()
-        for row in range(self.table.rowCount()):
-            title_item = self.table.item(row, 0)
-            title = title_item.text().lower() if title_item else ""
-            self.table.setRowHidden(row, text not in title)
+    # Search filtering removed per requirements
 
 
