@@ -41,7 +41,7 @@ class MainWindow(QMainWindow):
         self.poster = NaverBlogPoster()
 
         # UI
-        self.table = QTableWidget(0, 7)
+        self.table = QTableWidget(0, 8)
         self.table.setHorizontalHeaderLabels([
             "제목",
             "본문",
@@ -50,6 +50,7 @@ class MainWindow(QMainWindow):
             "기자이메일",
             "카테고리",
             "원본URL",
+            "블로그URL",
         ])
         self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.table.setSelectionBehavior(QAbstractItemView.SelectRows)
@@ -155,6 +156,7 @@ class MainWindow(QMainWindow):
                 item.get("reporter_email", ""),
                 item.get("category", ""),
                 item.get("source_url", ""),
+                item.get("blog_url", ""),
             ]
             for col, value in enumerate(values):
                 qitem = QTableWidgetItem(str(value))
@@ -174,6 +176,7 @@ class MainWindow(QMainWindow):
                 "reporter_email": it.get("email", ""),
                 "category": it.get("category", ""),
                 "source_url": it.get("link", ""),
+                "blog_url": it.get("blog_url", ""),
             })
         self.populate_table(mapped)
 
